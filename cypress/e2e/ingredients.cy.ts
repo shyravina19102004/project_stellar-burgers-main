@@ -42,7 +42,6 @@ describe('Работа с ингредиентами', function () {
   });
 
   it('Ингредиенты добавляются в заказ', function () {
-    // Выбираем случайные булочки и начиночки
     cy.visit(testUrl);
     const bunUuid = ingredients.find((e) => e.type === 'bun')?._id;
     const fillingUuids = ingredients
@@ -50,25 +49,20 @@ describe('Работа с ингредиентами', function () {
       .splice(0, 5)
       .map((e) => e._id);
 
-    // Добавляем булочку и ингредиенты
     cy.get(`[data-cy=ing-${bunUuid}] > button`).click();
     fillingUuids.forEach((uuid) =>
       cy.get(`[data-cy=ing-${uuid}] > button`).click()
     );
 
-    // Проверяем все ли булочки в корзине и совпадают ли они
-    // Проверяем все ли ингредиенты в корзине
     fillingUuids.forEach((uuid) => cy.get(`[data-cy=ing-buy-${uuid}]`));
     cy.get(`[data-cy=bun-up-buy-${bunUuid}]`);
     cy.get(`[data-cy=bun-down-buy-${bunUuid}]`);
   });
 
   it('Модальное окно ингредиента открывается и закрывается на крест', function () {
-    // Выбираем случайные булочки и начиночки
     cy.visit(testUrl);
     const bun = ingredients.find((e) => e.type === 'bun');
     if (!bun) return;
-    // Открываем модальное окно
     cy.get(`[data-cy=ing-${bun._id}]`).click();
     cy.get('h3').contains('Детали ингредиента');
     cy.get('h3').contains(bun.name);
@@ -77,12 +71,10 @@ describe('Работа с ингредиентами', function () {
   });
 
   it('Модальное окно ингредиента открывается и закрывается на клик вне формы', function () {
-    // Выбираем случайные булочки
     cy.visit(testUrl);
     const bun = ingredients.find((e) => e.type === 'bun');
 
     if (!bun) return;
-    // Открываем модальное окно
     cy.get(`[data-cy=ing-${bun._id}]`).click();
     cy.get('h3').contains('Детали ингредиента');
     cy.get('h3').contains(bun.name);
@@ -91,12 +83,10 @@ describe('Работа с ингредиентами', function () {
   });
 
   it('Создание заказа от неавторизованного пользователя', function () {
-    // Выбираем случайные булочки
     cy.visit(testUrl);
     const orderData: TNewOrderResponse =
       require('./mock/order.json') as TNewOrderResponse;
 
-    // Собираем моковый заказ
     orderData.order.ingredients.forEach((ingredient) => {
       cy.get(`[data-cy=ing-${ingredient}] > button`).click();
     });
